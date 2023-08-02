@@ -1,12 +1,18 @@
-const express = require('express');
-const app = express();
+const express = require("express")
+const app = express()
 const http = require('http').createServer(app);
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ server: http });
 
-const PORT = 3000;
-
 const rooms = {};
+
+app.get("/", (req, res) => {
+  res.send("Hello World!")
+})
+
+app.get("/ping", (req, res) => {
+  console.log('Test API');
+})
 
 wss.on('connection', (ws, req) => {
   console.log('Client connected.: '+ ws);
@@ -23,11 +29,11 @@ wss.on('connection', (ws, req) => {
 
   ws.on('message', (message) => {
     console.log('Received message:', message);
-	const data = message.toString('utf8');
+  const data = message.toString('utf8');
     // Gửi tin nhắn từ client đến tất cả các client trong cùng room
     rooms[room].forEach((client) => {
-		console.log('Client connected.: '+ ws);
-		console.log('Client connected.: '+ client);
+    console.log('Client connected.: '+ ws);
+    console.log('Client connected.: '+ client);
       if (client.readyState === WebSocket.OPEN) {
         client.send(data);
       }
@@ -45,6 +51,6 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-http.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server is listening on port 3000")
+})
