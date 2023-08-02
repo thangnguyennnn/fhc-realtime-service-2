@@ -4,6 +4,12 @@ const http = require('http').createServer(app);
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ server: http });
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:4200"); // Thay thế "http://your-angular-app-origin" bằng địa chỉ gốc của ứng dụng Angular
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 const rooms = {};
 
 app.get("/", (req, res) => {
